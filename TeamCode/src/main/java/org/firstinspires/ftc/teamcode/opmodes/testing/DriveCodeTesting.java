@@ -10,12 +10,14 @@ import org.firstinspires.ftc.teamcode.hardware.Hardware;
 @SuppressWarnings("unused")
 @TeleOp(name = "DriveCodeTesting", group = "Linear OpMode")
 
-public class DriveCodeTesting extends LinearOpMode{
+public class DriveCodeTesting extends LinearOpMode {
     // Declare OpMode members
     private final ElapsedTime runtime = new ElapsedTime();
-    private Hardware hardware = null;
+    private Hardware hardware;
+
     public void runOpMode() {
         hardware = new Hardware(hardwareMap);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -32,25 +34,20 @@ public class DriveCodeTesting extends LinearOpMode{
 //                hardware.topDifferential.setPower(0);
 //                hardware.bottomDifferential.setPower(0);
 //            }
-            if (gamepad2.left_stick_y > 0.1)
-            {
+            if (gamepad2.left_stick_y > 0.1) {
                 hardware.topDifferential.setDirection(DcMotorSimple.Direction.FORWARD);
                 hardware.topDifferential.setPower(0.5);
-            }
-            else if (gamepad2.left_stick_y < -0.1)
-            {
+            } else if (gamepad2.left_stick_y < -0.1) {
                 hardware.topDifferential.setDirection(DcMotorSimple.Direction.REVERSE);
                 hardware.topDifferential.setPower(0.5);
             }
-            if (gamepad2.right_stick_y > 0.1)
-            {
+
+            if (gamepad2.right_stick_y > 0.1) {
                 hardware.bottomDifferential.setDirection(DcMotorSimple.Direction.FORWARD);
                 hardware.bottomDifferential.setPower(0.5);
-            }
-            else if (gamepad2.right_stick_y < -0.1)
-            {
+            } else if (gamepad2.right_stick_y < -0.1) {
                 hardware.bottomDifferential.setDirection(DcMotorSimple.Direction.REVERSE);
-                hardware.bottomDifferential.setPower(0.5);;
+                hardware.bottomDifferential.setPower(0.5);
             }
         }
     }
