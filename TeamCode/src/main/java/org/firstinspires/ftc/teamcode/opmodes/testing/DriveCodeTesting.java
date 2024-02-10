@@ -1,17 +1,11 @@
-package org.firstinspires.ftc.teamcode;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.hardware.Hardware;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "DriveCodeTesting", group = "Linear OpMode")
@@ -22,7 +16,6 @@ public class DriveCodeTesting extends LinearOpMode{
     private Hardware hardware = null;
     public void runOpMode() {
         hardware = new Hardware(hardwareMap);
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
