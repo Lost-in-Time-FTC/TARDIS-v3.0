@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.hardware.Hardware;
 
 public class OuttakeSubsystem extends SubsystemBase {
     private final double defaultSpeed = 0.5;
-    private final Hardware hardware;
+    private Hardware hardware;
 
     public OuttakeSubsystem(Hardware hardware) {
         this.hardware = hardware;
