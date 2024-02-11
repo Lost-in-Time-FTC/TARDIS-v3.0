@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.opmodes.subsystems.OuttakeSubsystem;
 public class MoveDifferential extends CommandBase {
 
     // The subsystem the command runs on
-    private final OuttakeSubsystem outtakeSubsystem;
+    private OuttakeSubsystem outtakeSubsystem;
 
     public MoveDifferential(OuttakeSubsystem outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
@@ -16,7 +16,7 @@ public class MoveDifferential extends CommandBase {
 
     @Override
     public void execute() {
-        // TODO
+        outtakeSubsystem.rotateLeft();
     }
 
     @Override

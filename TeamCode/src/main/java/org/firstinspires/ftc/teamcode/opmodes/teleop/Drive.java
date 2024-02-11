@@ -15,7 +15,8 @@ public class Drive extends CommandOpMode {
     public void initialize() {
         OuttakeSubsystem outtakeSubsystem = new OuttakeSubsystem(hardware);
 
-        schedule(new MoveDifferential(outtakeSubsystem));
         register(outtakeSubsystem);
+        schedule(new MoveDifferential(outtakeSubsystem));
+        run();
     }
 }
