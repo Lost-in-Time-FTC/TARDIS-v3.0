@@ -23,7 +23,12 @@ public class Drive extends CommandOpMode {
         OuttakeSubsystem outtakeSubsystem = new OuttakeSubsystem(hardware);
 
         driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .toggleWhenPressed(new MoveDifferential(outtakeSubsystem), new InstantCommand(outtakeSubsystem::stop));
+                .whileHeld(new InstantCommand(outtakeSubsystem::rotateLeft))
+                .whenReleased(new InstantCommand(outtakeSubsystem::stop));
+
+        driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whileHeld(new InstantCommand(outtakeSubsystem::rotateRight))
+                .whenReleased(new InstantCommand(outtakeSubsystem::stop));
 
         register(outtakeSubsystem);
         schedule();
