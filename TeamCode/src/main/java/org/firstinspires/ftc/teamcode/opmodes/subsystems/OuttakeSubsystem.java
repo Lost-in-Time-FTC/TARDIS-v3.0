@@ -31,4 +31,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         hardware.topDifferential.setPower(defaultPower);
         hardware.bottomDifferential.setPower(defaultPower);
     }
+
+    public void stop() {
+        hardware.topDifferential.setPower(0);
+        hardware.bottomDifferential.setPower(0);
+    }
 }
