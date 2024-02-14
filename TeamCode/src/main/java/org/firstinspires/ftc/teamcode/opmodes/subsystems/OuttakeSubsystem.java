@@ -5,35 +5,30 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
 
 public class OuttakeSubsystem extends SubsystemBase {
-    private final double defaultPower = 0.5;
+    private final double defaultPower = 0.25;
     private Hardware hardware;
 
     public OuttakeSubsystem(Hardware hardware) {
         this.hardware = hardware;
     }
 
-    public void rotateRight() {
-        hardware.topDifferential.setPower(-defaultPower);
-        hardware.bottomDifferential.setPower(defaultPower);
-    }
-
-    public void rotateLeft() {
-        hardware.topDifferential.setPower(defaultPower);
-        hardware.bottomDifferential.setPower(-defaultPower);
-    }
-
     public void tiltUp() {
-        hardware.topDifferential.setPower(-defaultPower);
-        hardware.bottomDifferential.setPower(-defaultPower);
+        hardware.topDifferential.setPosition(-defaultPower);
+        hardware.bottomDifferential.setPosition(defaultPower);
     }
 
     public void tiltDown() {
-        hardware.topDifferential.setPower(defaultPower);
-        hardware.bottomDifferential.setPower(defaultPower);
+        hardware.topDifferential.setPosition(defaultPower);
+        hardware.bottomDifferential.setPosition(-defaultPower);
     }
 
-    public void stop() {
-        hardware.topDifferential.setPower(0);
-        hardware.bottomDifferential.setPower(0);
+    public void rotateLeft() {
+        hardware.topDifferential.setPosition(0);
+        hardware.bottomDifferential.setPosition(0);
+    }
+
+    public void rotateRight() {
+        hardware.topDifferential.setPosition(1);
+        hardware.bottomDifferential.setPosition(1);
     }
 }
