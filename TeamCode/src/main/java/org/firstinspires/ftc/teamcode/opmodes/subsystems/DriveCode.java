@@ -11,20 +11,19 @@ import com.qualcomm.robotcore.util.Range;
 public class DriveCode extends SubsystemBase{
 
     public static void drive(Gamepad gamepad, Hardware hardware) {
-
-                             // Mecanum
+        // Mecanum
         double drive = -gamepad.left_stick_y;
         double turn = gamepad.right_stick_x;
         double strafe = gamepad.left_stick_x;
 
         // Strafing
         double FL = Range.clip(drive + strafe + turn, -0.5, 0.5);
-        double FR = Range.clip(drive - strafe - turn, -0.5, 0.5);
+        double FR = Range.clip(drive + strafe - turn, -0.5, 0.5);
         double BL = Range.clip(drive - strafe + turn, -0.5, 0.5);
-        double BR = Range.clip(drive + strafe - turn, -0.5, 0.5);
+        double BR = Range.clip(drive - strafe - turn, -0.5, 0.5);
 
-        double DriveSpeed = 1.75;
-        double sniperPercent = 0.25;
+        double DriveSpeed = 3.5;
+        double sniperPercent = 0.5;
 
         // Sniper mode
         if (gamepad.left_trigger > 0) {
