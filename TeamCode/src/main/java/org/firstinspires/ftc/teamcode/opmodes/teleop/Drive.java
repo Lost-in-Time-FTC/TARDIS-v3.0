@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,7 +21,6 @@ import org.firstinspires.ftc.teamcode.opmodes.subsystems.DriveCode;
 @TeleOp(name = "Drive via CommandOpMode", group = "Linear OpMode")
 public class Drive extends CommandOpMode {
 
-    @Override
     public void initialize() {
         final Hardware hardware = new Hardware(hardwareMap);
 
@@ -37,17 +42,19 @@ public class Drive extends CommandOpMode {
         schedule();
         run();
     }
+
     public void runOpMode() {
         final Hardware hardware = new Hardware(hardwareMap);
+
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad2.right_bumper) {
                 hardware.leftIntakeExtension.setPower(1);
-                hardware.rightIntakeExtension.setPower(-1);
+                hardware.rightIntakeExtension.setPower(1);
             }
             else if (gamepad2.left_bumper) {
                 hardware.leftIntakeExtension.setPower(-1);
-                hardware.rightIntakeExtension.setPower(1);
+                hardware.rightIntakeExtension.setPower(-1);
             }
             else {
                 hardware.leftIntakeExtension.setPower(0);
@@ -71,6 +78,16 @@ public class Drive extends CommandOpMode {
             if (gamepad2.right_trigger > 0.1) {
                 hardware.rightFourbar.setPosition(0);
                 hardware.leftFourbar.setPosition(1);
+            }
+
+            if (gamepad2.right_stick_y > 0.25) {
+                hardware.outtakeExtension.setPower(0.75);
+            }
+            else if (gamepad2.right_stick_y < -0.25) {
+                hardware.outtakeExtension.setPower(-0.75);
+            }
+            else {
+                hardware.outtakeExtension.setPower(0);
             }
 
             DriveCode.drive(gamepad1, hardware);

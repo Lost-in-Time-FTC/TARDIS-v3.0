@@ -46,5 +46,7 @@ public class Hardware {
         // direction
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        outtakeExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightIntakeExtension.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 }
