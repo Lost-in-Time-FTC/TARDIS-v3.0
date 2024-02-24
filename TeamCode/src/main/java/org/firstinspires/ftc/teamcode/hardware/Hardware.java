@@ -1,52 +1,59 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @SuppressWarnings("unused")
 public class Hardware {
-    public Servo leftDifferential;
-    public Servo rightDifferential;
-    public Servo leftFourbar;
-    public Servo rightFourbar;
-    public Servo pincerLeft;
-    public Servo pincerRight;
+    public Servo leftClawServo;
+    public Servo rightClawServo;
+    public Servo verticalServo;
     public DcMotorEx leftBack;
     public DcMotorEx leftFront;
     public DcMotorEx rightBack;
     public DcMotorEx rightFront;
-    public DcMotorEx intakeRoller;
-    public DcMotorEx leftIntakeExtension;
-    public DcMotorEx rightIntakeExtension;
-    public DcMotorEx outtakeExtension;
+    public DcMotorEx elevatorMotor;
+    public DcMotorEx armMotor;
+    public DcMotorEx climbMotor;
 
     public Hardware(HardwareMap hardwareMap) {
-        // servos
-        leftDifferential = hardwareMap.get(Servo.class, "leftDiff");
-        rightDifferential = hardwareMap.get(Servo.class, "rightDiff");
-        leftFourbar = hardwareMap.get(Servo.class, "leftFourbar");
-        rightFourbar = hardwareMap.get(Servo.class, "rightFourbar");
-        pincerLeft = hardwareMap.get(Servo.class, "pincerLeft");
-        pincerRight = hardwareMap.get(Servo.class, "pincerLeft");
-
-        // motors
-        intakeRoller = hardwareMap.get(DcMotorEx.class, "intakeRoller");
-        leftIntakeExtension = hardwareMap.get(DcMotorEx.class, "leftIntakeExtension");
-        rightIntakeExtension = hardwareMap.get(DcMotorEx.class, "rightIntakeExtension");
-        outtakeExtension = hardwareMap.get(DcMotorEx.class, "outtakeExtension");
+        //servo
+        rightClawServo = hardwareMap.get(Servo.class, "rightClawServo");
+        leftClawServo = hardwareMap.get(Servo.class, "leftClawServo");
+        verticalServo = hardwareMap.get(Servo.class, "verticalServo");
+        // motor
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
+        armMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
 
-        // direction
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        outtakeExtension.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightIntakeExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    final double LEFT_CLAW_OPEN = 0;
+    final double LEFT_CLAW_CLOSE = 1;
+    final double RIGHT_CLAW_OPEN = 1;
+    final double RIGHT_CLAW_CLOSE = 0;
+    final double CLAW_ROTATE_UP = 1;
+    final double CLAW_ROTATE_DOWN = 0;
+
+    public void closeClaw() {
+        rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
+        leftClawServo.setPosition(LEFT_CLAW_CLOSE);
+    }
+
+    public void openClaw() {
+        rightClawServo.setPosition(RIGHT_CLAW_OPEN);
+        leftClawServo.setPosition(LEFT_CLAW_OPEN);
     }
 }
