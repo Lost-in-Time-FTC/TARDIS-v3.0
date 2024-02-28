@@ -73,7 +73,7 @@ public abstract class AutoCommands extends LinearOpMode {
             telemetry.addData("fl ticks", hardware.leftFront.getCurrentPosition());
             telemetry.addData("br ticks", hardware.rightBack.getCurrentPosition());
             telemetry.addData("bl ticks", hardware.leftBack.getCurrentPosition());
-            telemetry.addData("arm ticks", hardware.armMotor.getCurrentPosition());
+//            telemetry.addData("arm ticks", hardware.armMotor.getCurrentPosition());
             telemetry.addData("elevator ticks", hardware.elevatorMotor.getCurrentPosition());
             telemetry.update();
         }

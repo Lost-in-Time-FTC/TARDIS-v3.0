@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,30 +15,17 @@ import org.firstinspires.ftc.teamcode.opmodes.subsystems.DriveCode;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "LiT Drive Program 2022-2023", group = "Linear OpMode")
-
+@Config
 public class LiTDrive extends LinearOpMode {
-
-    private PIDController controller;
-
-    public static double p = -0.007, i = 0, d = 0;
-    public static double f = 0;
-
-    public static int target = 0;
-
-    private PIDController slidecontroller;
-
-    public static double p2 = 0.006, i2 = 0, d2 = 0;
-    public static double f2 = 0;
-
-    public static int target2 = 0;
-
-    private final double tickes_in_degree = 700 / 180.0;
 
     enum ClawToggleTriState {
         FALSE,
         OPEN,
         WIDE_OPEN
     }
+    public static double servopos = 0.0;
+    public static double servopos1 = 0.0;
+    public static double servopos2 = 0.0;
 
     // Declare OpMode members
     private final ElapsedTime runtime = new ElapsedTime();
@@ -51,16 +39,8 @@ public class LiTDrive extends LinearOpMode {
 
         hardware = new Hardware(hardwareMap);
 
-        hardware.armMotor.setDirection(DcMotor.Direction.FORWARD);
+//        hardware.armMotor.setDirection(DcMotor.Direction.FORWARD);
         hardware.elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        controller = new PIDController(p, i, d);
-        slidecontroller = new PIDController(p2, i2, d2);
-
-        hardware.armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.elevatorMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.armMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        hardware.elevatorMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -74,13 +54,16 @@ public class LiTDrive extends LinearOpMode {
             claw();
             elevator();
             armPivot();
-            telemetry.addData("slide", hardware.elevatorMotor.getCurrentPosition());
-            telemetry.update();
 
-            telemetry.addData("arm", hardware.armMotor.getCurrentPosition());
-            telemetry.addData("armtarget", target);
-            telemetry.addData("slidetarget", target2);
-
+            if (gamepad1.dpad_right) {
+                hardware.verticalServo.setPosition(servopos);
+            }
+            if (gamepad1.dpad_down) {
+                hardware.rightClawServo.setPosition(servopos1);
+            }
+            if (gamepad1.dpad_left) {
+                hardware.leftClawServo.setPosition(servopos2);
+            }
         }
     }
 
@@ -180,63 +163,11 @@ public class LiTDrive extends LinearOpMode {
 
     // control arm extension
     public void elevator() {
-        slidecontroller.setPID(p2, i2, d2);
-        int armPos = hardware.elevatorMotor.getCurrentPosition();
-        double pid = slidecontroller.calculate(armPos, target2);
-        double ff = Math.cos(Math.toRadians(target2 / tickes_in_degree)) * f;
-
-        if (Math.abs(gamepad2.right_stick_y) < .1) {
-            double power = pid + ff;
-            hardware.elevatorMotor.setPower(power);
-        } else {
-            hardware.elevatorMotor.setPower(-gamepad2.right_stick_y);
-            target2 = hardware.elevatorMotor.getCurrentPosition();
-        }
-
-        final double LEFT_CLAW_OPEN = 1;
-        final double LEFT_CLAW_CLOSE = 0;
-        final double RIGHT_CLAW_OPEN = 0;
-        final double RIGHT_CLAW_CLOSE = 1;
-
-        if (gamepad2.y) {
-            target2 = 1000;
-            switch (leftClawToggle) {
-                case OPEN:
-                    leftClawToggle = ClawToggleTriState.WIDE_OPEN;}
-            hardware.verticalServo.setPosition(.45);
-
-        }
-
-        if (gamepad2.b) {
-            target2 = 0;
-        }
-
 
     }
 
     // control arm's circular motion
     public void armPivot() {
-        //double armPivotSpeed = 0.85;
-        //double armPower = gamepad2.left_stick_y;
-        controller.setPID(p, i, d);
-        int armPos = hardware.armMotor.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target / tickes_in_degree)) * f;
 
-        if (Math.abs(gamepad2.left_stick_y) < .1)
-        { double power = pid + ff;
-            hardware.armMotor.setPower(power); }
-
-        else {hardware.armMotor.setPower(gamepad2.left_stick_y);
-            target = hardware.armMotor.getCurrentPosition();}
-
-        if (gamepad2.y) {
-            target = -550;
-        }
-
-        if (gamepad2.b) {
-            target = 300;
-
-        }
     }
 }
