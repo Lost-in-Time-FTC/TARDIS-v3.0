@@ -107,6 +107,13 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setMode(mode);
         hardware.leftBack.setMode(mode);
     }
+    public void stopAndResetAllWheelEncoders() {
+        hardware.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
     public final void strafeLeft(int targetPosition, double power) {
         hardware.rightFront.setTargetPosition(hardware.rightFront.getCurrentPosition()+targetPosition);
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()-targetPosition);

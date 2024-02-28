@@ -54,8 +54,6 @@ public class PropBlobDetection extends OpenCvPipeline {
     Mat edges = new Mat();
     Mat hierarchy = new Mat();
 
-
-
     @Override
     public Mat processFrame(Mat input) {
         // DETECTING COLOR THROUGH A THRESHOLD, HSV because RGB is less reliable with lighting changes

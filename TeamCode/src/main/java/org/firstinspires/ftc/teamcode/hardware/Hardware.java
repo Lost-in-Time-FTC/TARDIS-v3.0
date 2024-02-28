@@ -38,6 +38,7 @@ public class Hardware {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
     }
 

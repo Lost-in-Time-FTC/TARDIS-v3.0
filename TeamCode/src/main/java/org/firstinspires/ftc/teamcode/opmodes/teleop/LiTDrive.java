@@ -23,9 +23,7 @@ public class LiTDrive extends LinearOpMode {
         OPEN,
         WIDE_OPEN
     }
-    public static double servopos = 0.0;
-    public static double servopos1 = 0.0;
-    public static double servopos2 = 0.0;
+
 
     // Declare OpMode members
     private final ElapsedTime runtime = new ElapsedTime();
@@ -54,16 +52,6 @@ public class LiTDrive extends LinearOpMode {
             claw();
             elevator();
             armPivot();
-
-            if (gamepad1.dpad_right) {
-                hardware.verticalServo.setPosition(servopos);
-            }
-            if (gamepad1.dpad_down) {
-                hardware.rightClawServo.setPosition(servopos1);
-            }
-            if (gamepad1.dpad_left) {
-                hardware.leftClawServo.setPosition(servopos2);
-            }
         }
     }
 
@@ -163,11 +151,12 @@ public class LiTDrive extends LinearOpMode {
 
     // control arm extension
     public void elevator() {
-
+        hardware.elevatorMotor.setPower(gamepad2.right_stick_y);
     }
 
     // control arm's circular motion
     public void armPivot() {
-
+        hardware.leftArmMotor.setPower(gamepad2.left_stick_y);
+        hardware.rightArmMotor.setPower(gamepad2.left_stick_y);
     }
 }

@@ -12,18 +12,21 @@ import org.firstinspires.ftc.teamcode.opmodes.auto.PropBlobDetection;
 public class RedCloseAuto extends AutoCommands {
     @Override
     public void runOpMode() throws InterruptedException {
+        final double LEFT_CLAW_OPEN = 1;
+        final double LEFT_CLAW_CLOSE = 0;
+        final double RIGHT_CLAW_OPEN = 0;
+        final double RIGHT_CLAW_CLOSE = 1;
+
         initHardware(PropBlobDetection.AllianceColor.RED);
         trackTelemetryWhileNotIsStarted();
         waitForStart();
 
         Hardware hardware = new Hardware(hardwareMap);
+
         // Store detected parking position
         PropBlobDetection.PropBlobPosition position = propBlobDetection.getPosition();
-
-        final double LEFT_CLAW_OPEN = 1;
-        final double LEFT_CLAW_CLOSE = 0;
-        final double RIGHT_CLAW_OPEN = 0;
-        final double RIGHT_CLAW_CLOSE = 1;
+        // Reset encoders at the very beginning to maintain proper position throughout
+        stopAndResetAllWheelEncoders();
 
         // Pick up preloaded pixels and adjust arm position
         if (position == PropBlobDetection.PropBlobPosition.LEFT) {
@@ -45,11 +48,6 @@ public class RedCloseAuto extends AutoCommands {
             hardware.rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
             hardware.leftClawServo.setPosition(LEFT_CLAW_CLOSE);
         }
-
-        telemetry.addData("placeholder ", 4324);
-        sleep(5000);
-        hardware.rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
-        hardware.leftClawServo.setPosition(LEFT_CLAW_CLOSE);
     }
 }
 
