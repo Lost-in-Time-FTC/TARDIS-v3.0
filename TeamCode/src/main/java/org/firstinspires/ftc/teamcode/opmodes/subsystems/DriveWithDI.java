@@ -1,16 +1,38 @@
 package org.firstinspires.ftc.teamcode.opmodes.subsystems;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
 
-import com.arcrobotics.ftclib.command.SubsystemBase;
+import java.lang.annotation.*;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
+// Custom annotation for dependency injection
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@interface Inject {
+}
 
-import com.qualcomm.robotcore.util.Range;
+public class DriveWithDI {
 
-public class DriveCode extends SubsystemBase {
+    @Inject
+    private Gamepad gamepad;
 
-    public static void drive(Gamepad gamepad, Hardware hardware) {
+    @Inject
+    private Hardware hardware;
+
+    public DriveWithDI() {
+    }
+
+    public void setGamepad(Gamepad gamepad) {
+        this.gamepad = gamepad;
+    }
+
+    public void setHardware(Hardware hardware) {
+        this.hardware = hardware;
+    }
+
+    public void drive() {
         // Mecanum
         double drive = -gamepad.right_stick_x;
         double turn = gamepad.left_stick_y;
@@ -35,3 +57,5 @@ public class DriveCode extends SubsystemBase {
         hardware.rightBack.setPower(BR * DriveSpeed);
     }
 }
+
+// Container class responsible for injecting dependencies

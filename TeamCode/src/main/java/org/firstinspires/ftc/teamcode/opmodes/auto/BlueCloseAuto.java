@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.opmodes.auto.AutoCommands;
 import org.firstinspires.ftc.teamcode.opmodes.auto.PropBlobDetection;
 
 @SuppressWarnings("unused")
-@Autonomous(name = "RedCloseAuto")
-public class RedCloseAuto extends AutoCommands {
+@Autonomous(name = "BlueCloseAuto")
+public class BlueCloseAuto extends AutoCommands {
     private int WAIT_TIME_AFTER_PIXEL_DROP = 1000;
     private double DEFAULT_POWER = 0.4;
     private int DEGREE_90_IN_TICKS = 680;
@@ -28,39 +28,39 @@ public class RedCloseAuto extends AutoCommands {
                 hardware.rightClawServo.setPosition(RIGHT_CLAW_OPEN);
                 sleep(WAIT_TIME_AFTER_PIXEL_DROP);
                 moveBackward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS, DEFAULT_POWER);
-                rotateRight(DEGREE_90_IN_TICKS + rotateLeftTicks, DEFAULT_POWER);
+                rotateLeft(DEGREE_90_IN_TICKS-rotateLeftTicks, DEFAULT_POWER);
                 break;
             case CENTER:
                 moveForward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS + 10, DEFAULT_POWER);
                 hardware.rightClawServo.setPosition(RIGHT_CLAW_OPEN);
                 sleep(WAIT_TIME_AFTER_PIXEL_DROP);
-                moveBackward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS, DEFAULT_POWER);
-                rotateRight(680, DEFAULT_POWER);
+                moveBackward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS + 10, DEFAULT_POWER);
+                rotateLeft(680, DEFAULT_POWER);
                 break;
             case RIGHT:
                 int rotateRightTicks = 600;
                 rotateRight(rotateRightTicks, DEFAULT_POWER);
-                moveForward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS, DEFAULT_POWER);
+                moveForward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS + 15, DEFAULT_POWER);
                 hardware.rightClawServo.setPosition(RIGHT_CLAW_OPEN);
                 sleep(WAIT_TIME_AFTER_PIXEL_DROP);
-                moveBackward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS, DEFAULT_POWER);
-                rotateRight(DEGREE_90_IN_TICKS-rotateRightTicks, DEFAULT_POWER);
+                moveBackward(UNIVERSAL_CONTINUE_AFTER_SPIKE_TICKS + 15, DEFAULT_POWER);
+                rotateLeft(DEGREE_90_IN_TICKS + rotateRightTicks, DEFAULT_POWER);
                 break;
         }
     }
-
     private void placeOnBackdrop(PropBlobDetection.PropBlobPosition position) {
         switch (position) {
             case LEFT:
-                strafeLeft(80, DEFAULT_POWER);
+                strafeLeft(40, DEFAULT_POWER);
                 break;
             case CENTER:
-                strafeRight(250, DEFAULT_POWER);
+                strafeRight(150, DEFAULT_POWER);
                 break;
             case RIGHT:
-                strafeRight(500, DEFAULT_POWER);
+                strafeRight(200, DEFAULT_POWER);
                 break;
         }
+
         // move arm, extend claw, drop pixel, retract
         hardware.armMotor.setTargetPosition(100);
         hardware.elevatorMotor.setPower(0.45);
@@ -75,18 +75,17 @@ public class RedCloseAuto extends AutoCommands {
     private void parkInZone(PropBlobDetection.PropBlobPosition position) {
         switch (position) {
             case LEFT:
-                strafeRight(300, DEFAULT_POWER);
-                moveForward(75, DEFAULT_POWER);
+                strafeRight(1075, DEFAULT_POWER);
                 break;
             case CENTER:
-                strafeRight(200, DEFAULT_POWER);
-                moveForward(75, DEFAULT_POWER);
+                strafeRight(875, DEFAULT_POWER);
                 break;
             case RIGHT:
-                strafeRight(100, DEFAULT_POWER);
-                moveForward(75, DEFAULT_POWER);
+                strafeRight(740, DEFAULT_POWER);
                 break;
         }
+
+        moveForward(405, DEFAULT_POWER);
     }
 
     @Override
@@ -104,6 +103,7 @@ public class RedCloseAuto extends AutoCommands {
         moveForward(UNIVERSAL_MOVE_TO_SPIKE_TICKS, DEFAULT_POWER);
         placeOnSpikeStrip(position);
         // At this point, all positions have placed on the spike strip and are facing the board
+        hardware.verticalServo.setPosition(ANGLED_TO_BOARD_SERVO_POSITION);
         moveForward(1210, DEFAULT_POWER);
         placeOnBackdrop(position);
         // Park

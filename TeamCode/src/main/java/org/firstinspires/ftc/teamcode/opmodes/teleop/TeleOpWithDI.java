@@ -5,20 +5,21 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 import org.firstinspires.ftc.teamcode.hardware.Hardware;
-import org.firstinspires.ftc.teamcode.opmodes.subsystems.DriveCode;
+import org.firstinspires.ftc.teamcode.opmodes.subsystems.DriveWithDI;
+import org.firstinspires.ftc.teamcode.opmodes.subsystems.DependencyInjector;
+
 
 @SuppressWarnings("unused")
-@TeleOp(name = "LiTDrive", group = "Linear OpMode")
+@TeleOp(name = "TeleOp w/ DI", group = "Linear OpMode")
 @Config
-public class LiTDrive extends LinearOpMode {
+public class TeleOpWithDI extends LinearOpMode {
     // Hardware Setup
     private Hardware hardware = null;
-
 
     // Claw TriState
     enum ClawToggleTriState {
@@ -42,18 +43,23 @@ public class LiTDrive extends LinearOpMode {
     // OpMode Config
     private final ElapsedTime runtime = new ElapsedTime();
 
-    final double LEFT_CLAW_OPEN = 1;
-    final double LEFT_CLAW_CLOSE = 0;
-    final double RIGHT_CLAW_OPEN = 0;
-    final double RIGHT_CLAW_CLOSE = 1;
-
     public void runOpMode() {
         Gamepad currentGamepad2 = new Gamepad();
         Gamepad previousGamepad2 = new Gamepad();
 
         hardware = new Hardware(hardwareMap);
 
-        hardware.rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        DriveWithDI driveSubsystem = new DriveWithDI();
+
+        try {
+            DependencyInjector.injectDependencies(driveSubsystem, gamepad1, hardware);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            telemetry.addData("Error", "Dependency injection failed");
+            telemetry.update();
+            requestOpModeStop();
+        }
+
         hardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -70,7 +76,7 @@ public class LiTDrive extends LinearOpMode {
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             toggle(currentGamepad2, previousGamepad2);
-            DriveCode.drive(gamepad1, hardware);
+            driveSubsystem.drive();
             claw();
             elevator();
             armPivot();
@@ -146,7 +152,7 @@ public class LiTDrive extends LinearOpMode {
                 hardware.rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
                 break;
             case FALSE:
-                hardware.rightClawServo.setPosition(0.1);
+                hardware.rightClawServo.setPosition(0.25);
                 break;
         }
 
@@ -185,7 +191,10 @@ public class LiTDrive extends LinearOpMode {
 
         if (gamepad2.left_stick_y < 0.1 && gamepad2.left_stick_y > -0.1)
         {
-            hardware.armMotor.setPower(0);
+            rotationTarget = hardware.armMotor.getCurrentPosition();
+            double power = pid + ff;
+            hardware.armMotor.setPower(power);
+
         }
         else
         {

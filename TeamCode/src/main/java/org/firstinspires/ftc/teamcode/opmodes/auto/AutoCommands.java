@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,26 +22,29 @@ public abstract class AutoCommands extends LinearOpMode {
     public PIDCoefficients pidGains = new PIDCoefficients(0, 0, 0); // PID gains which we will define later in the process
     ElapsedTime PIDTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS); // Timer
     // Constants
-    final double LEFT_CLAW_OPEN = 0;
-    final double LEFT_CLAW_CLOSE = 1;
-    final double RIGHT_CLAW_OPEN = 1;
-    final double RIGHT_CLAW_CLOSE = 0;
+    final double LEFT_CLAW_OPEN = 1;
+    final double LEFT_CLAW_CLOSE = 0;
+    final double RIGHT_CLAW_OPEN = 0;
+    final double RIGHT_CLAW_CLOSE = 1;
     final double CLAW_ROTATE_UP = 1;
     final double CLAW_ROTATE_DOWN = 0;
     final double ARM_PIVOT_SPEED = 1;
     final double ARM_PIVOT_SPEED_DOWN = 1;
     final int ARM_POSITION_LOW_TOLERANCE = 10;
     final int ARM_POSITION_HIGH_TOLERANCE = 50;
-    // Name of the Webcam to be set in the config
-    public String webcamName = "Webcam 1";
     // Hardware
     public Hardware hardware;
     public PropBlobDetection propBlobDetection;
+    public String webcamName = "Webcam 1"; // Name of the Webcam to be set in the config
     public OpenCvCamera camera;
-
+    private static double TICKS_PER_INCH = 1614.5/48;
     public final void initHardware(PropBlobDetection.AllianceColor color) {
         // Generic hardware
         hardware = new Hardware(hardwareMap);
+
+//        hardware.rightFront.setDirection(DcMotor.Direction.REVERSE);
+        hardware.leftBack.setDirection(DcMotor.Direction.REVERSE);
+        hardware.leftFront.setDirection(DcMotor.Direction.REVERSE);
 
         // OpenCV camera
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -60,11 +64,6 @@ public abstract class AutoCommands extends LinearOpMode {
         });
     }
 
-    // move forward to bring arm over the spikestrip
-//    setAllWheelMotorPower(0.6);
-//    setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
-//    trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
-//    setAllWheelMotorPower(0);
     public final void trackTelemetryWhileNotIsStarted() {
         while (!isStarted()) {
             telemetry.addData("Prop Position: ", propBlobDetection.getPosition());
@@ -73,7 +72,7 @@ public abstract class AutoCommands extends LinearOpMode {
             telemetry.addData("fl ticks", hardware.leftFront.getCurrentPosition());
             telemetry.addData("br ticks", hardware.rightBack.getCurrentPosition());
             telemetry.addData("bl ticks", hardware.leftBack.getCurrentPosition());
-//            telemetry.addData("arm ticks", hardware.armMotor.getCurrentPosition());
+            telemetry.addData("arm ticks", hardware.armMotor.getCurrentPosition());
             telemetry.addData("elevator ticks", hardware.elevatorMotor.getCurrentPosition());
             telemetry.update();
         }
@@ -108,19 +107,15 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.leftBack.setMode(mode);
     }
     public void stopAndResetAllWheelEncoders() {
-        hardware.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        setAllWheelMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public final void strafeLeft(int targetPosition, double power) {
         hardware.rightFront.setTargetPosition(hardware.rightFront.getCurrentPosition()+targetPosition);
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()-targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()-targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()+targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
     }
@@ -129,8 +124,8 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()+targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()+targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()-targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
     }
@@ -139,8 +134,8 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()+targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()-targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()-targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
     }
@@ -149,8 +144,8 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()-targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()+targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()+targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
     }
@@ -159,8 +154,8 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()+targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()+targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()+targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
     }
@@ -169,9 +164,29 @@ public abstract class AutoCommands extends LinearOpMode {
         hardware.rightBack.setTargetPosition(hardware.rightBack.getCurrentPosition()-targetPosition);
         hardware.leftFront.setTargetPosition(hardware.leftFront.getCurrentPosition()-targetPosition);
         hardware.leftBack.setTargetPosition(hardware.leftBack.getCurrentPosition()-targetPosition);
-        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         setAllWheelMotorPower(power);
+        setAllWheelMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
         trackAllWheelCurrentPositionTelemetryWhileMotorIsBusy();
         setAllWheelMotorPower(0);
+    }
+    public final void openLeftClaw() {
+        hardware.leftClawServo.setPosition(LEFT_CLAW_OPEN);
+    }
+    public final void closeLeftClaw() {
+        hardware.leftClawServo.setPosition(LEFT_CLAW_CLOSE);
+    }
+    public final void openRightClaw() {
+        hardware.rightClawServo.setPosition(RIGHT_CLAW_OPEN);
+    }
+    public final void closeRightClaw() {
+        hardware.rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
+    }
+    public final void openTriadClaw() {
+        hardware.leftClawServo.setPosition(LEFT_CLAW_OPEN);
+        hardware.rightClawServo.setPosition(RIGHT_CLAW_OPEN);
+    }
+    public final void closeTriadClaw() {
+        hardware.leftClawServo.setPosition(LEFT_CLAW_CLOSE);
+        hardware.rightClawServo.setPosition(RIGHT_CLAW_CLOSE);
     }
 }

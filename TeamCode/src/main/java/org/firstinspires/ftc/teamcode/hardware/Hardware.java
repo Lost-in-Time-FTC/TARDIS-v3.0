@@ -16,8 +16,7 @@ public class Hardware {
     public DcMotorEx rightBack;
     public DcMotorEx rightFront;
     public DcMotorEx elevatorMotor;
-    public DcMotorEx leftArmMotor;
-    public DcMotorEx rightArmMotor;
+    public DcMotorEx armMotor;
     public DcMotorEx climbMotor;
 
     public Hardware(HardwareMap hardwareMap) {
@@ -31,14 +30,12 @@ public class Hardware {
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
-        leftArmMotor = hardwareMap.get(DcMotorEx.class, "leftArmMotor");
-        rightArmMotor = hardwareMap.get(DcMotorEx.class, "rightArmMotor");
+        armMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
     }
 
